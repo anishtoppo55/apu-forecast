@@ -1,0 +1,20 @@
+# Notebook environment
+jupyterlab
+ipykernel
+
+# Data processing and analysis
+numpy
+pandas
+holidays
+statsmodels
+
+# Visualization
+matplotlib
+seaborn
+
+# Model training and tuning
+scikit-learn
+joblib
+lightgbm
+optuna
+

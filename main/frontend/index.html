@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APU Dhanbad — Demand Forecast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="/frontend/chart.umd.js"></script>
+<style>
+  :root {
+    --purple: #6C3FE0;
+    --purple-dark: #5A2FD0;
+    --purple-light: #F1ECFE;
+    --bg: #F4F5FA;
+    --card: #FFFFFF;
+    --text-dark: #1E1B2E;
+    --text-mid: #6B6880;
+    --text-light: #9B98AC;
+    --border: #ECEAF4;
+    --green: #1FAE6B;
+    --green-bg: #E7F8EF;
+    --orange: #E58A2A;
+    --orange-bg: #FCEFDD;
+    --red: #E5484D;
+    --red-bg: #FCE9EA;
+    --radius: 16px;
+    --shadow: 0 2px 12px rgba(30, 27, 46, 0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    display: flex;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: 230px;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 17px;
+    margin-bottom: 36px;
+    color: var(--text-dark);
+  }
+  .logo-mark {
+    width: 30px; height: 30px;
+    background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 800; font-size: 14px;
+  }
+  .nav-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-light);
+    letter-spacing: 0.06em;
+    margin: 18px 0 10px 10px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: var(--text-mid);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-item:hover { background: var(--purple-light); color: var(--purple-dark); }
+  .nav-item.active { background: var(--purple); color: white; }
+  .nav-item .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink:0; opacity:0.85; }
+
+  .sidebar-footer {
+    margin-top: auto;
+    background: linear-gradient(160deg, var(--purple), var(--purple-dark));
+    border-radius: 14px;
+    padding: 16px;
+    color: white;
+  }
+  .sidebar-footer .ff-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .sidebar-footer .ff-sub { font-size: 11.5px; opacity: 0.85; line-height: 1.4; }
+
+  /* ===== MAIN ===== */
+  .main { flex: 1; padding: 28px 36px; max-width: 1400px; }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 26px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .topbar h1 { font-size: 25px; font-weight: 800; letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--text-mid); font-size: 13.5px; margin-top: 4px; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+  .pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-mid);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pill.status-dot::before {
+    content: '';
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+  }
+
+  .btn-refresh {
+    background: var(--purple);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .btn-refresh:hover { background: var(--purple-dark); }
+  .btn-refresh:disabled { opacity: 0.6; cursor: default; }
+
+  /* ===== GRID ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 22px;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .card-title { font-size: 15.5px; font-weight: 700; }
+  .card-sub { font-size: 12px; color: var(--text-mid); margin-top: 2px; }
+
+  .legend-toggles { display: flex; gap: 8px; flex-wrap: wrap; }
+  .legend-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 11px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-mid);
+    transition: opacity 0.15s;
+    user-select: none;
+  }
+  .legend-toggle .swatch { width: 9px; height: 9px; border-radius: 50%; }
+  .legend-toggle.off { opacity: 0.4; }
+
+  .chart-wrap { position: relative; height: 320px; }
+
+  /* Weather grid */
+  .weather-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .weather-tile {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .weather-tile .wt-label { font-size: 11.5px; color: var(--text-mid); font-weight: 600; margin-bottom: 6px; display:flex; align-items:center; gap:6px; }
+  .weather-tile .wt-value { font-size: 22px; font-weight: 800; }
+  .weather-tile .wt-unit { font-size: 12px; color: var(--text-light); font-weight: 600; }
+  .weather-tile .wt-mini-chart { height: 40px; margin-top: 8px; }
+
+  .fan-strip { display: flex; gap: 1.5px; margin-top: 6px; height: 14px; border-radius: 4px; overflow: hidden; }
+  .fan-strip div { flex: 1; background: var(--border); }
+  .fan-strip div.on { background: var(--purple); }
+
+  /* Stats row */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 18px 20px;
+  }
+  .stat-card .sc-label { font-size: 12px; color: var(--text-mid); font-weight: 600; margin-bottom: 8px; display:flex; align-items:center; justify-content:space-between; }
+  .stat-card .sc-value { font-size: 24px; font-weight: 800; }
+  .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  .badge.good { background: var(--green-bg); color: var(--green); }
+  .badge.mid  { background: var(--orange-bg); color: var(--orange); }
+
+  /* Bottom row */
+  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .holiday-list { display: flex; flex-direction: column; gap: 10px; }
+  .holiday-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--purple-light);
+    border-radius: 10px;
+    padding: 11px 14px;
+  }
+  .holiday-item .hi-icon {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: var(--purple);
+    color: white; display:flex; align-items:center; justify-content:center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .holiday-item .hi-name { font-weight: 700; font-size: 13px; }
+  .holiday-item .hi-date { font-size: 11.5px; color: var(--text-mid); }
+  .empty-state {
+    text-align: center;
+    padding: 36px 12px;
+    color: var(--text-light);
+  }
+  .empty-state .es-icon { font-size: 28px; margin-bottom: 8px; }
+  .empty-state .es-text { font-size: 13px; font-weight: 500; }
+
+  .model-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .model-row:last-child { border-bottom: none; }
+  .model-name { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 13px; }
+  .model-name .swatch { width: 10px; height: 10px; border-radius: 3px; }
+  .model-bar-wrap { flex: 1; margin: 0 16px; background: var(--bg); height: 7px; border-radius: 4px; overflow: hidden; }
+  .model-bar { height: 100%; border-radius: 4px; }
+  .model-mape { font-size: 13px; font-weight: 700; width: 50px; text-align: right; }
+
+  footer.app-footer {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 12px;
+    margin-top: 24px;
+    padding-bottom: 20px;
+  }
+
+  @media (max-width: 1000px) {
+    .grid, .stats-row, .bottom-grid { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">A</div>
+    APU Forecast
+  </div>
+
+  <div class="nav-section-label">MENU</div>
+  <a class="nav-item active" data-target="forecast-section"><span class="dot"></span> Forecast</a>
+  <a class="nav-item" data-target="weather-section"><span class="dot"></span> Weather</a>
+  <a class="nav-item" data-target="model-section"><span class="dot"></span> Model Accuracy</a>
+  <a class="nav-item" data-target="holiday-section"><span class="dot"></span> Holidays</a>
+
+  <div class="nav-section-label">REGION</div>
+  <div class="nav-item" style="cursor:default;"><span class="dot"></span> Dhanbad, Jharkhand</div>
+
+  <div class="sidebar-footer">
+    <div class="ff-title">Proof of Concept</div>
+    <div class="ff-sub">Forecasts use live Dhanbad weather; load history is seeded from 2017–18 data.</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div>
+      <h1>24-Hour Demand Forecast</h1>
+      <div class="sub" id="forecast-window-label">Loading forecast window…</div>
+    </div>
+    <div class="topbar-right">
+      <div class="pill status-dot" id="status-pill">Live</div>
+      <button class="btn-refresh" id="refresh-btn">↻ Refresh Forecast</button>
+    </div>
+  </div>
+
+  <!-- Quick stats -->
+  <div class="stats-row" id="stats-row">
+    <!-- filled by JS -->
+  </div>
+
+  <div class="grid" id="forecast-section">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Power Consumption Forecast</div>
+          <div class="card-sub">Next 24 hours · 10-minute resolution</div>
+        </div>
+        <div class="legend-toggles" id="legend-toggles"></div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="forecastChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card" id="weather-section">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Weather Snapshot</div>
+          <div class="card-sub">Dhanbad · live conditions, next 24h</div>
+        </div>
+      </div>
+      <div class="weather-grid">
+        <div class="weather-tile">
+          <div class="wt-label">🌡️ Temperature</div>
+          <div class="wt-value" id="temp-value">–</div>
+          <div class="wt-mini-chart"><canvas id="tempMiniChart"></canvas></div>
+        </div>
+        <div class="weather-tile">
+          <div class="wt-label">💧 Humidity</div>
+          <div class="wt-value" id="humidity-value">–</div>
+          <div class="wt-mini-chart"><canvas id="humidityMiniChart"></canvas></div>
+        </div>
+        <div class="weather-tile">
+          <div class="wt-label">☁️ Cloud Cover</div>
+          <div class="wt-value" id="cloud-value">–</div>
+          <div class="wt-mini-chart"><canvas id="cloudMiniChart"></canvas></div>
+        </div>
+        <div class="weather-tile">
+          <div class="wt-label">🌀 Wind Speed</div>
+          <div class="wt-value" id="wind-value">–</div>
+          <div class="fan-strip" id="fan-strip" title="Purple = fan/blower likely ON (wind speed > 2.5)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Feeder Comparison</div>
+          <div class="card-sub">Peak / average / lowest load — F1, F2, F3</div>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="feederBarChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Load Share at Peak</div>
+          <div class="card-sub" id="share-donut-caption">Feeder share of Total at forecasted peak</div>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="shareDonutChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="card" id="model-section">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Model Accuracy</div>
+          <div class="card-sub">Validation MAPE per feeder (held-out test set)</div>
+        </div>
+      </div>
+      <div id="model-accuracy-rows"></div>
+    </div>
+
+    <div class="card" id="holiday-section">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Holidays in Forecast Window</div>
+          <div class="card-sub">Localized Dhanbad / Jharkhand calendar</div>
+        </div>
+      </div>
+      <div class="holiday-list" id="holiday-list"></div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    APU Power Demand Forecasting POC — LightGBM models trained on 2017–18 Dhanbad feeder data, served with live weather context.
+  </footer>
+</main>
+
+<script src="/frontend/app.js"></script>
+</body>
+</html>
