@@ -48,6 +48,14 @@ Below is the interactive dashboard showing:
 
 ---
 
+## 🌐 Live Demo
+
+Access the deployed application here:
+
+👉 https://apu-forecast-192u.onrender.com
+
+> Note: The app may take 30–60 seconds to load on first visit due to cold start (Render free tier).
+
 ## 🧱 Project Structure
 
 ```

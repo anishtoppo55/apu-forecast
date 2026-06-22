@@ -1,7 +1,13 @@
 # APU Forecast
 
 APU Forecast is an electricity-demand forecasting project that uses historical utility consumption, weather conditions, calendar information, and machine-learning models to predict total and feeder-wise power demand.
+## 🌐 Live Demo
 
+Access the deployed application here:
+
+👉 https://apu-forecast-192u.onrender.com
+
+> Note: The app may take 30–60 seconds to load on first visit due to cold start (Render free tier).
 ## Project Folders
 
 - **`assets/`** contains the assignment document and holiday reference files used during the project.
