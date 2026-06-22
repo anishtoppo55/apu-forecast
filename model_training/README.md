@@ -2,6 +2,9 @@
 
 This folder contains the notebooks, helper script, datasets, and exported artifacts used to train the power-consumption forecasting models.
 
+> [!WARNING]
+> Some notebooks may not render correctly on GitHub. Clone the repository and open them locally in JupyterLab for the best viewing experience.
+
 ## Contents
 
 - `Utlity_final_LGBM.ipynb` trains and evaluates LightGBM forecasting models for total demand and the three feeder targets.

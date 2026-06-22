@@ -2,6 +2,9 @@
 
 This folder contains the notebooks and source data used to clean, inspect, and understand the utility-consumption time series before feature engineering and model training.
 
+> [!WARNING]
+> Some notebooks may not render correctly on GitHub. Clone the repository and open them locally in JupyterLab for the best viewing experience.
+
 ## Contents
 
 - `preprocess.ipynb` cleans the raw data, checks data quality and anomalies, enriches it with weather information, and prepares the total consumption field.
