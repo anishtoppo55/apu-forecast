@@ -1,7 +1,7 @@
 // ============================================================
 // Configuration
 // ============================================================
-const API_BASE = "http://127.0.0.1:8000"; // change if your backend runs elsewhere
+const API_BASE = window.location.origin; // change if your backend runs elsewhere
 
 const TARGET_META = {
   Total_PowerConsumption: { label: "Total", color: "#6C3FE0" },
