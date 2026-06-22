@@ -8,6 +8,10 @@ Access the deployed application here:
 👉 https://apu-forecast-192u.onrender.com
 
 > Note: The app may take 30–60 seconds to load on first visit due to cold start (Render free tier).
+
+> [!WARNING]
+> Some notebooks may not render correctly on GitHub. Clone the repository and open them locally in JupyterLab for the best viewing experience.
+
 ## Project Folders
 
 - **`assets/`** contains the assignment document and holiday reference files used during the project.
