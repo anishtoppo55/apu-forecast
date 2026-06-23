@@ -52,8 +52,9 @@ Below is the interactive dashboard showing:
 
 Access the deployed application here:
 
-👉 https://apu-forecast-192u.onrender.com
+👉 https://apu-forecast-5i8z.onrender.com
 
+👉 https://apu-forecast-production.up.railway.app
 > Note: The app may take 30–60 seconds to load on first visit due to cold start (Render free tier).
 
 ## 🧱 Project Structure
