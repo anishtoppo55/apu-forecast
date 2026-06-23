@@ -97,7 +97,7 @@ Returns weather + contextual features.
 ### 1. Clone repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/anishtoppo55/apu-forecast.git
 cd main
 ```
 
