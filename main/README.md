@@ -151,7 +151,7 @@ docker build -t apu-forecast .
 ### 2. Run container
 
 ```bash
-docker run -p 8000:8000 apu-forecast
+docker run -p 8000:10000 apu-forecast
 ```
 
 ---
