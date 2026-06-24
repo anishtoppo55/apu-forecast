@@ -52,7 +52,7 @@ Below is the interactive dashboard showing:
 
 Access the deployed application here:
 
-👉 https://apu-forecast-5i8z.onrender.com
+👉 https://apu-forecast-bb3b.onrender.com
 
 👉 https://apu-forecast-production.up.railway.app
 > Note: The app may take 30–60 seconds to load on first visit due to cold start (Render free tier).
@@ -99,6 +99,7 @@ Returns weather + contextual features.
 
 ```bash
 git clone https://github.com/anishtoppo55/apu-forecast.git
+cd apu-forecast
 cd main
 ```
 
