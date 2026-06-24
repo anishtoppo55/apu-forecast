@@ -102,12 +102,14 @@ def get_context():
         for _, row in weather_df.iterrows()
     ]
 
-    holidays_in_period = holiday_df[holiday_df["is_holiday"] == 1]
+    holidays_in_period = holiday_df[holiday_df["is_holiday"] == 1].copy()
+    holidays_in_period["date"] = holidays_in_period["datetime"].dt.normalize()
+    holidays_in_period = holidays_in_period.drop_duplicates(subset="date")
+
     holiday_records = [
-        {"datetime": row["datetime"].isoformat(), "holiday_name": row["holiday_name"]}
+        {"datetime": row["date"].isoformat(), "holiday_name": row["holiday_name"]}
         for _, row in holidays_in_period.iterrows()
     ]
-
     return {
         "start_time": start_time.isoformat(),
         "horizon_steps": N_STEPS,
